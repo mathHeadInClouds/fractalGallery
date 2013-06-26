@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="author" content="MathHeadInClouds" />
+	<title>fractal gallery</title>
+    <link href="../jQueryUiCssUiLightness/jquery-ui-1.8.21.custom.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="../jquery-ui-1.8.21.custom.min.js"></script>
+    <script type="text/javascript" src="../googleStringTools.js"></script>
+    <script type="text/javascript">
+
+var totalNumPics = 61;
+var showingAll = false;
+var nowShowing = 0;
+var pics = [];
+
+function numToPath(i){
+    return ( i <= 9 ? "0" : "" ) + i + ".png";
+}
+function prevBtnClick(){
+    nowShowing--;
+    if (nowShowing < 0) nowShowing += totalNumPics;
+    showSingle();
+}
+function nextBtnClick(){
+    nowShowing++;
+    if (nowShowing >= totalNumPics) nowShowing -= totalNumPics;
+    showSingle();
+}
+function showSingle(){
+    var single = $("#single");
+    single.html("");
+    //var img = $("<img/>", {src: numToPath(nowShowing)});
+    loadPic(nowShowing);
+    single.append(pics[nowShowing]);
+    var p = $("<p/>"); p.text((nowShowing+1) + "/" + totalNumPics);
+    single.append(p);
+}
+function loadPic(i){
+    if (pics[i] != null) return; // already loaded
+    var img = new Image();
+    img.src = numToPath(i);
+    pics[i] = img;
+}
+function appendPic(i){
+    var all = $("#all");
+    loadPic(i);
+    var p = $("<p/>"); p.text(i+1);
+    all.append(p);
+    all.append(pics[i]);
+}
+function showAll(){
+    var all = $("#all");
+    all.html("");
+    for (var i=0; i<totalNumPics; i++){
+        setTimeout("appendPic(" +i+ ")", i);
+    }
+}
+function mainButtonClicked(){
+    if ( showingAll ){
+        $("#all").html("");
+        showSingle();
+        $("#mainButton .ui-button-text").text("show all");
+        $("#previousButton").show();
+        $("#nextButton").show();
+    } else {
+        $("#single").html("");
+        showAll();
+        $("#mainButton .ui-button-text").text("show slide show");
+        $("#previousButton").hide();
+        $("#nextButton").hide();
+    }
+    showingAll = !showingAll;
+}
+function init(){
+    $("#mainButton").button();
+    $("#previousButton").button();
+    $("#nextButton").button();
+    for (var i=0; i<totalNumPics; i++) pics.push(null);
+    showSingle();
+}
+    </script>
+
+    
+</head>
+
+<body onload="init();">
+
+<button id="mainButton" onclick="mainButtonClicked();">show all pics</button>
+<button id="previousButton" onclick="prevBtnClick();">previous</button>
+<button id="nextButton" onclick="nextBtnClick();">next</button>
+
+<div id="single"></div>
+
+<div id="all"></div>
+
+
+
+</body></html>
